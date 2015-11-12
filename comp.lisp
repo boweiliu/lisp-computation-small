@@ -35,9 +35,8 @@
 
 (map 'list #' (lambda (fir) (map 'list #' (lambda (x) (cons fir x)) (gen-range 0 10 1))) (gen-range 0 10 1))
 
-
-(defun range () 
-  '((a -10 0)
+(defun range (step-sz)
+  '(( -10 0)
    (c 0 10)
    (z 0 10)
    (x -10 0)))
