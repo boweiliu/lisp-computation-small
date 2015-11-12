@@ -6,17 +6,15 @@
    ( + ( * x x ) (* x z ) (* z z) )
    ( * a c (+ a c ) )
    ( * x z (+ x z ) )))
-
 (defun fuzz-val () 1.0d-8)
 (defun leq2 (e1 e2)
   (< e1 (+ e2 (fuzz-val))))
-(defun leqh (num nums)
-  (cond ((null nums) t)
+(defun leq (s1 &rest s2)
+  (cond ((null s2) t)
 	(t (and
-	    (leq2 num (car nums))
-	    (leqh (car nums) (cdr nums))))))
-(defun leq (s1 &rest s2) (leqh s1 s2))
-   
+	    (leq2 s1 (car s2))
+	    (apply 'leq s2)))))
+
 (defun constraints (eps)
   (lambda (a c x z) ( and
     (leq a 0 c)
