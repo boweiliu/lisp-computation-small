@@ -17,6 +17,11 @@
     (leq (+ a x) (+ (/ -2 3) (* 2 eps)))
     (leq (+ c z) (- (/ 4 3) (* 4 eps)))
     (leq (+ 1 a) z))))
+(defun range (step-sz)
+  `(( -10 0 ,step-sz)  ; a
+    (0 10 ,step-sz)    ; c
+    (0 10 ,step-sz)    ; x
+    (-10 0 ,step-sz))) ; z
 
 (defun fuzz-val () 1.0d-8)
 (defun leq2 (e1 e2) (< e1 (+ e2 (fuzz-val))))
@@ -28,16 +33,11 @@
 (defun gen-range (bot top step)
   (cond ((not (leq bot top)) ())
 	(t (cons bot (gen-range (+ bot step) top step)))))
-
-;(map 'list #' (lambda (fir) (map 'list #' (lambda (x) (cons fir x)) (gen-range 0 10 1))) (gen-range 0 10 1))
-
-(defun range (step-sz)
-  '(( -10 0)
-   (c 0 10)
-   (z 0 10)
-   (x -10 0)))
-
-
-
-
-;(defun check-constraint (vars eq)
+(defun exp-prod-hlpr (l1 l2)
+  (mapcan (lambda (e1) ( mapcar (lambda (e2) (cons e1 e2)) l2 ) ) l1))
+(defun exp-prod (lists) (reduce #'exp-prod-hlpr lists
+				:from-end t
+				:initial-value '(())))
+(defun gen-tuples (ranges)
+  (exp-prod (mapcar (lambda (x) (apply #'gen-range x)) ranges)))
+(gen-tuples (range .2))
